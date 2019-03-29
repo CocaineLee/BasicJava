@@ -1,5 +1,7 @@
 package cn.school.thoughtworks.section2;
 
+import org.omg.PortableInterceptor.INACTIVE;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,28 +12,36 @@ public class PracticeC {
         Map<String,Integer> result=new HashMap<String, Integer>();
         for(String key: collection1)
         {
-            if(!result.containsKey(key)) {
-                result.put(key, 0);
-                if(key.length()!=1)
-                {
-                    String[] kNv=key.split("-");
-                    if(kNv.length!=2){
-                        kNv =key.split(":");
-                        if(kNv.length!=2){
-                            kNv =key.split("[");
-                            kNv[1]=kNv[1].split("]")[0];
-                        }
-                    }
-                    result.put(kNv[0],Integer.parseInt(kNv[1]+result.get(kNv[0])));
+            if(key.length()!=1){
+                String keys;
+                Integer value;
+                String[] keyNValue;
+                if(key.contains("-")){
+                    keyNValue=key.split("-");
+                    keys=keyNValue[0];
+                    value=Integer.parseInt(keyNValue[1]);
                 }
-                else {
-
-                    for (String index : collection1) {
-                        if (key.equals(index))
-                            result.put(key, result.get(key) + 1);
-                    }
+                else if(key.contains(":")){
+                    keyNValue=key.split(":");
+                    keys=keyNValue[0];
+                    value=Integer.parseInt(keyNValue[1]);
                 }
+                else{
+                    keyNValue=key.split("\\[");
+                    keys=keyNValue[0];
+                    value=Integer.parseInt(keyNValue[1].split("]")[0]);
+                }
+                if(result.containsKey(keys)) value+=result.get(keys);
+                result.put(keys,value);
             }
+            else{
+                if(!result.containsKey(key)) {
+                    result.put(key, 1);
+                }
+                else
+                    result.put(key,result.get(key)+1);
+            }
+
         }
         return result;
     }
